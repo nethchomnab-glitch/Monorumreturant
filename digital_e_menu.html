@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Menu បង្កងអ្នកលឿង មនោរម្យ</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Hanuman / Siemreap for Khmer text -->
+    <link href="https://fonts.googleapis.com/css2?family=Hanuman:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Hanuman', 'Poppins', sans-serif;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        #image-modal[hidden] {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Header / Navbar -->
+    <header class="bg-red-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-bold tracking-wide">បង្កងអ្នកលឿង មនោរម្យ</h1>
+                <p class="text-xs text-red-200">Mornorom Restaurant - E-Menu</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <div class="bg-gradient-to-r from-red-900 to-red-800 text-white py-6 px-4 text-center">
+        <h2 class="text-2xl font-bold mb-1">សូមស្វាគមន៍! ឆ្ងាញ់ សុខភាពល្អ</h2>
+        <p class="text-sm text-red-200">សូមជ្រើសរើសមុខម្ហូបដែលលោកអ្នកចូលចិត្តខាងក្រោមនេះ</p>
+    </div>
+
+    <!-- Category Filter Buttons -->
+    <nav class="sticky top-[68px] z-40 max-w-4xl mx-auto px-4 py-4 w-full bg-slate-50">
+        <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-2">
+            <button onclick="filterCategory('all', this)" class="cat-btn active px-4 py-2 rounded-full text-sm font-medium bg-red-900 text-white whitespace-nowrap shadow-sm transition">ទាំងអស់</button>
+            <button onclick="filterCategory('soup', this)" class="cat-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-700 hover:bg-slate-100 whitespace-nowrap shadow-sm transition">ស៊ុប & ម្ជូរ</button>
+            <button onclick="filterCategory('fried', this)" class="cat-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-700 hover:bg-slate-100 whitespace-nowrap shadow-sm transition">ម្ហូបឆា</button>
+            <button onclick="filterCategory('fish', this)" class="cat-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-700 hover:bg-slate-100 whitespace-nowrap shadow-sm transition">ម្ហូបត្រី</button>
+            <button onclick="filterCategory('seafood', this)" class="cat-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-700 hover:bg-slate-100 whitespace-nowrap shadow-sm transition">ម្ហូបបង្កង</button>
+            <button onclick="filterCategory('egg', this)" class="cat-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-700 hover:bg-slate-100 whitespace-nowrap shadow-sm transition">ពងទា & ផ្សេងៗ</button>
+        </div>
+    </nav>
+
+    <!-- Main Menu List Grid -->
+    <main class="max-w-4xl mx-auto px-4 pb-24 flex-grow w-full">
+        <div id="menu-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Dishes will be injected dynamically via JavaScript -->
+        </div>
+    </main>
+
+    <div id="image-modal" hidden class="fixed inset-0 z-[60] bg-black/80 p-4 flex items-center justify-center" role="dialog" aria-modal="true" aria-label="រូបភាពមុខម្ហូប">
+        <button id="modal-close" type="button" class="absolute top-4 right-4 text-white text-3xl leading-none" aria-label="បិទ">&times;</button>
+        <img id="modal-image" src="" alt="" class="max-h-[90vh] max-w-full object-contain rounded-lg shadow-2xl">
+    </div>
+
+    <!-- Footer Contact -->
+    <footer class="bg-slate-900 text-slate-400 py-6 text-center text-xs mt-auto">
+        <p class="mb-1">ទំនាក់ទំនងផ្នែកបញ្ជាទិញ៖ 016 509 059 / 097 9 509 059 / 085 555 303</p>
+        <p>&copy; 2026 បង្កងអ្នកលឿង មនោរម្យ. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Menu Dataset based on Mornorom Restaurant menu
+        const dishes = [
+            { id: 1, name: "ម្ជូរគ្រឿងសាច់គោ", category: "soup", img: "Image/dish-01.png" },
+            { id: 2, name: "ត្រីខស្វាយខ្ចី", category: "fish", img: "Image/dish-02.png" },
+            { id: 3, name: "ត្រីបំពងស្វាយខ្ចី", category: "fish", img: "Image/dish-03.png" },
+            { id: 4, name: "ត្រីចៀនជួន", category: "fish", img: "Image/dish-04.png" },
+            { id: 5, name: "ឆាខ្ញី", category: "fried", img: "Image/dish-05.png" },
+            { id: 6, name: "ឆាខាត់ណាសាច់គោ", category: "fried", img: "Image/dish-06.png" },
+            { id: 7, name: "ឆាម្ទេសសាច់គោ", category: "fried", img: "Image/dish-07.png" },
+            { id: 8, name: "ឆាត្រកួនប្រេងខ្យង", category: "fried", img: "Image/dish-08.png" },
+            { id: 9, name: "ឆាផ្កាខាត់ណាសាច់គោ", category: "fried", img: "Image/dish-09.png" },
+            { id: 10, name: "មាន់ដុត", category: "fried", img: "Image/dish-10.png" },
+            { id: 11, name: "មាន់លីងគល់ស្លឹកគ្រៃ", category: "fried", img: "Image/dish-11.png" },
+            { id: 12, name: "ពងទាម្រះចៀន", category: "egg", img: "Image/dish-12.png" },
+            { id: 13, name: "តុងយ៉ាំបង្កង", category: "soup", img: "Image/dish-13.jpg" },
+            { id: 14, name: "បង្កងក្រឡុក", category: "seafood", img: "Image/dish-14.png" },
+            { id: 15, name: "បង្កងខ", category: "seafood", img: "Image/dish-15.png" },
+            { id: 16, name: "បង្កងលីងអំបិលម្ទេស", category: "seafood", img: "Image/dish-16.jpg" },
+            { id: 17, name: "បង្កងអ៊ាំ", category: "seafood", img: "Image/dish-17.jpg" },
+            { id: 18, name: "បង្កងខ្ទឹមសរពុះ", category: "seafood", img: "Image/dish-18.jpg" },
+            { id: 19, name: "បង្កងខ្ទឹមសរពុះ (រូបទី 2)", category: "seafood", img: "Image/dish-18.jpg" },
+            { id: 20, name: "ពងទាត្រីប្រម៉ា", category: "egg", img: "Image/dish-19.jpg" },
+            { id: 21, name: "ម្ជូយួន", category: "soup", img: "Image/dish-20.jpg" },
+            { id: 22, name: "ស្ងោរជ្រក់សាច់មាន់", category: "soup", img: "Image/dish-21.jpg" },
+            { id: 23, name: "មុខម្ហូបពិសេស", category: "seafood", img: "Image/dish-22.jpg" }
+        ];
+
+        // Render Menu Grid
+        function renderMenu(category = 'all') {
+            const grid = document.getElementById('menu-grid');
+            grid.innerHTML = '';
+
+            const filtered = category === 'all' ? dishes : dishes.filter(d => d.category === category);
+
+            filtered.forEach(dish => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden border border-slate-100 flex flex-col";
+                card.innerHTML = `
+                    <div class="h-44 overflow-hidden relative bg-slate-100">
+                        <img src="${dish.img}" alt="${dish.name}" loading="lazy" class="w-full h-full object-contain hover:scale-105 transition duration-300 cursor-zoom-in" onclick="openImageModal(this)" onerror="this.src='https://placehold.co/400x300/6b1418/ffffff?text=Food'; this.onerror=null;">
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h3 class="font-bold text-lg text-slate-800 mb-2 text-center">${dish.name}</h3>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Category Filter handler
+        function filterCategory(cat, button) {
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('bg-red-900', 'text-white');
+                btn.classList.add('bg-white', 'text-slate-700');
+            });
+            button.classList.remove('bg-white', 'text-slate-700');
+            button.classList.add('bg-red-900', 'text-white');
+            renderMenu(cat);
+        }
+
+        function openImageModal(image) {
+            const modal = document.getElementById('image-modal');
+            const modalImage = document.getElementById('modal-image');
+            modalImage.src = image.src;
+            modalImage.alt = image.alt;
+            modal.hidden = false;
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('image-modal');
+            modal.hidden = true;
+            document.getElementById('modal-image').src = '';
+        }
+
+        document.getElementById('modal-close').addEventListener('click', closeImageModal);
+        document.getElementById('image-modal').addEventListener('click', function (event) {
+            if (event.target === this) {
+                closeImageModal();
+            }
+        });
+
+        // Initialize on load
+        window.onload = function() {
+            renderMenu('all');
+        };
+    </script>
+</body>
+</html>
